@@ -1,0 +1,423 @@
+
+<!DOCTYPE html><html><head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/addons/p5.sound.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="setup.js"></script>
+    <script src="flower.js"></script>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="style.css">
+   <style>
+      html,body{font-family: Arial;background-color: #000;}
+      .container {
+              margin: 0 auto;
+              border: 0px solid black;
+              width: 80%;
+              color: #fff;
+              border-radius: 3px;
+              background-color: #2d302a;
+              text-align: center;
+              padding-top: 33px;
+        }
+
+      .preview{
+         width: 100px;
+         height: 100px;
+         border: 1px solid black;
+         margin: 0 auto;
+         background: white;
+      }
+
+      .preview img{
+         display: none;
+      }
+      
+    </style>
+  </head>
+  <body>
+    <h2 style="color:#aaa; padding-bottom: 50px;">Flowerbill . <i style="font-size:14px;">Design your money</i> </h2>  
+    <form id="form1" method="post">
+   <button id="inum" type="text" style="display:none;">n</button><input id="urli" value="olivilla.jpg" size=12 style="display:none;"><textarea id="coord" style="display:none;" ></textarea> <button type="text" id="saveb" style="display:none;" class="button">Save your designs</button></form>
+    <div id="cont" style="font-size:40px;color:#ddaaaa;display:none;"></div>
+    <button id="showl" style="display:none;">ᐸ</button>
+    <button id="reloadi" style="display:none;">Reload</button>
+    <button id="showr" style="display:none;" >ᐳ</button>
+    <div id="sample" style="display:none;position:absolute;"><div style="position:relative;top:0px,left:0px;margin:0;padding:0px;"><div id="ipoint" style="position:absolute;width:40px;height:40px;top: 10px;left:10px;background-color: #000;background-color:transparent;border-style:solid;border-width:2px;"></div></div></div>
+  <script>
+     var angle;
+var angle2;
+var radius;
+var shape;
+var shape2;
+var offset = 0;
+var factor;
+
+var aangle1 = 0;
+var aangle2 = 0;
+var sangle = 0;
+var aini1 = 0;
+var aini2 = 0;
+var offset = 0;
+var centerx = 0;
+var centery = 0;
+var diagonal2 = 100;
+var W = 400;
+var H = 400;
+var clickCount = 1;
+var contSaved = 0;
+var coord;
+var inpt;
+var contdiv;
+var showr, showl, reloadi, savef, inum, form1
+var contf = 1
+
+var cfoto = []
+var slices = 24;
+var img;
+var started = false
+var imgsize = { w: 10, h: 10, propor: 1, cursor: 40, posx: 0, posy: 0 }
+var billcanvas
+var flower = []
+var flower1
+var flower2
+var hash = ''
+var billmax = 6
+var bills = [0, 1, 2, 5, 10, 20, 50]
+var nameimg = ''
+var url = location.href.split('?')
+    var h1 = url[1].split('id=')
+    var hash = h1[1]
+
+
+
+var preid = makeid(50)
+var rs = makeid(50)
+if(hash.length==50){rs=hash}
+
+cfoto = [{ "img": "", "w": 10, "h": 10, "n": slices, "W": W, "o": offset, "d": diagonal2, id: preid, msg:"","created":"","user":"","name":"","harmony":""}]
+url = location.href.split('?')
+h1 = url[1].split('id=')
+hash = h1[1]
+if (hash.length == 50) {
+    nameimg = 'upload/' + hash + '.jpg'
+    cfoto[0].img = hash
+}
+
+
+
+var ch1=getRandomInt(0, chords.length-1)
+var ch2=getRandomInt(0, chords.length-1)
+var chordProgression=[chords[ch1],chords[ch2]]
+
+
+
+
+function newi(n) {
+  
+    cfoto[0].n = slices
+    ix = parseInt(Math.random() * (cfoto[0].w - diagonal2))
+    iy = parseInt(Math.random() * (cfoto[0].h - diagonal2))
+
+    //var oof= par[parseInt(random(par.length-1))]
+
+    diagonal2 = parseInt(random(W / 2, W))
+    slices = par[parseInt(random(par.length - 1))]
+    angle = (2 * PI) / slices;
+    angle2 = (2 * PI) / slices;
+    sangle = angle / 2;
+    aini2 = 0 + sangle * 1;
+    ofsset = random(0, 1)
+   
+    //offset=PI/oof
+    //chinum()
+    var am=0
+    if(n<bills.length && n>0){
+      am=bills[n]
+    }
+
+    cfoto[n] = { "x": ix, "y": iy, "n": slices, "d": diagonal2, "o": ofsset, "i": hash, "exp": "", "am": am , "title":"", "msg":"", "key":"", "notes":""}
+    //inpt.value(JSON.stringify(cfoto))
+    //sample.style('background-position', ix+'px '+iy+'px')
+    //ipoint.style('left', ix+'px')
+    //ipoint.style('top',  iy+'px')
+    inpt.value(JSON.stringify(cfoto))
+    //console.log('Newi ' + cfoto[n])
+}
+
+
+function preload() {
+    img = loadImage(nameimg);
+    cfoto[0].w = img.width
+    cfoto[0].h = img.height
+    cfoto[0].W = W
+    cfoto[0].d = W / 1.2
+
+
+    slices = cfoto[0].n
+    //inpt.value(JSON.stringify(cfoto))
+
+    img = loadImage(nameimg);
+
+    //preload()
+    pp = 1 / 2
+    imgsize = { w: img.width * pp, h: img.height * pp, propor: pp, cursor: 40, posx: 0, posy: 0 }
+    contf = 1
+
+
+
+}
+
+function setup1() {
+    cfoto[0].w = img.width
+    cfoto[0].h = img.height
+
+
+    nh = 3
+    margin = 10
+    imgw = 200
+    W = imgw;
+    H = W
+    cfoto[0].W = W
+    diagonal2 = W;
+    offset = 0
+    marginx = margin * (nh + 1)
+    //nrows = ceil((cfoto.length-1)/3)
+    nrows = ceil((billmax) / 3)
+    marginy = margin * (nrows + 1)
+    pp = 1 / 2
+    imgsize = { w: img.width * pp, h: img.height * pp, propor: pp, cursor: 40, posx: 0, posy: 0 }
+    //console.log('width '+(imgw*nh+marginx))
+    billcanvas = createCanvas((imgw * nh + marginx), (imgw * nrows + marginy));
+
+
+    inpt = select('#coord');
+  
+    form1=select('#saveb');
+    form1.style('display', 'none')
+    //posc=billcanvas.position()
+    //billcanvas.position(posc.x,posc.y+20)
+    posc = billcanvas.position()
+    form1.style('position', 'absolute')
+    form1.style('left', (posc.x + width - 60) + 'px')
+    form1.style('top', (posc.y + height + 30) + 'px')
+
+
+    billmax = 6
+    //console.log('billmax '+billmax)
+    for (var a = 1; a <= billmax; a++) {
+       if(a==1){newi(a,0)}else{
+        newi(a)
+      }
+        //console.log('go '+cfoto[a])
+    }
+
+    factor = 2;
+    angle = (2 * PI) / slices;
+    angle2 = (2 * PI) / slices;
+    sangle = angle / 2;
+    aini2 = 0 + sangle * 1;
+    aangle2 = 0;
+    radius = min(W, H); //2*4.9;
+    //angleMode(RADIANS);
+    imageMode(CENTER);
+
+    flower = []
+    //alert(cfoto)
+    cfoto[0].W = 200
+    var hpos = 0
+    var contx = 1
+    var conty = 1
+    imgsize.posx = 0 + margin
+    imgsize.posy = hpos + margin
+    //alert(cfoto.length-1+' '+cfoto[0].id)
+    cfoto[0].W = 200
+    for (var a = 1; a <= billmax; a++) {
+        flower[a] = new Flower(a, img, cfoto[0], cfoto[a], imgsize);
+        if (a % 3 == 0 && a > 1) {
+            hpos += cfoto[0].W;
+            conty++
+            imgsize.posy = hpos + margin * conty;
+            contx = 0
+
+        }
+        imgsize.posx = cfoto[0].W * contx + margin * contx + margin
+        contx++
+    }
+
+    setTimeout(function() {
+        started = true
+        redraw();
+
+    }, 3000);
+    // redraw()
+}
+
+function draw() {
+
+    if (started && img.width > 12) {
+        background(44, 44, 44);
+        for (var a = 1; a <= billmax; a++) {
+            flower[a].change(a, cfoto[a])
+            flower[a].display()
+            flower[a].drawText('','','',false)
+            //text(a,flower[a].posx+100,flower[a].posy+100)
+        }
+        //flower1.cssChange()
+        noLoop()
+        form1.style('display', 'block')
+    } else {
+        background(100);
+        image(img, 0, 0, width + frameCount * 1.8, height + frameCount * 1.8)
+        fill(100 + frameCount, 150)
+        textStyle(BOLD)
+        rect(0, 0, width, height)
+        textAlign(CENTER, CENTER)
+        fill(0)
+
+        text('loading \n FlowerBill \n ' + frameCount, width / 2, height / 2)
+    }
+}
+
+
+
+
+
+
+
+function linkto() {
+   
+}
+
+function chinum() {
+    //slices=parseInt(inum.value())
+    par = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 36, 38, 40]
+    //var oof= par[parseInt(random(par.length-1))]
+    var oof = random(2, 40)
+    offset = PI / oof
+    diagonal2 = random(150, W / 1.5)
+    slices = par[parseInt(random(par.length - 1))]
+    angle = (2 * PI) / slices;
+    angle2 = (2 * PI) / slices;
+    sangle = angle / 2;
+    aini2 = 0 + sangle * 1;
+
+}
+
+function toreload() {
+    chinum()
+    newi(contf)
+    redraw();
+}
+
+function toright() {
+    contf++
+    if (contf > billmax) {
+        contf = 1
+    }
+    contdiv.html(contf)
+    redraw();
+}
+
+function toleft() {
+    contf--
+    if (contf < 1) {
+        contf = billmax
+    }
+    contdiv.html(contf)
+    redraw();
+}
+
+function tosave() {
+    contf = 1
+    for (a = 1; a <= billmax; a++) {
+        save("billet" + (contf + 0) + ".png");
+        redraw();
+        contf++
+    }
+    tolink()
+}
+
+
+function mousePressed() {
+    if (started) {
+        for (var a = 1; a <= billmax; a++) {
+            flower[a].clicked();
+        }
+    }
+
+}
+
+
+function mouseMoved() {
+    if (started) {
+        for (var a = 1; a <= billmax; a++) {
+            flower[a].isInside();
+            if (flower[a].inside) {
+                cursor(HAND)
+                //contdiv.html(bills[a])
+                break
+            } else {
+                cursor(ARROW)
+            }
+
+        }
+    }
+
+}
+
+function mousePressedX() {
+    //ofsset = random(PI * 2);
+    clickCount++;
+    if (clickCount > billmax) {
+        clickCount = 1;
+    }
+    contdiv.html(contf)
+    redraw();
+}
+
+function savei() {
+    contSaved++;
+    //save("billet" + (contSaved + 0) + ".png");
+    code = inpt.value() + '{"x":' + centerx + ',"y":' + centery + '},\n'
+    inpt.value(code)
+    contdiv.html(contSaved)
+}
+
+function keyPressed() {
+    if (key == " ") {
+        savei();
+    }
+}
+
+
+$(document).ready(function() {
+
+    setTimeout(function() {
+        setup1()
+    }, 2000);
+
+    //redraw()  
+
+    $("#saveb").click(function() {
+        $.post("editor.php", {
+                name: 'append',
+                coord: inpt.value(),
+                id: cfoto[0].id
+            },
+            function(data, status) {
+                 //alert("Data: " + data + "\nStatus: " + status);
+                //windows.location="viewer.html?id="+cfoto[0].id
+                //window.location.replace('viewer.html?id=' + cfoto[0].id);
+                window.location.replace('emission.html?id=' + cfoto[0].id);
+            }
+
+        );
+        return false
+    });
+});
+$(window).on("beforeunload", function() { 
+    //$.get("walletlist.php?remove=true")
+})
+  </script>
+</body></html>

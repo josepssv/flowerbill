@@ -1,0 +1,29 @@
+html, body {
+  text-align: center;
+  margin-top: 10px;
+  background-color: #ddd;
+}
+canvas {
+  display: block;
+   margin: auto;
+}
+.leaf {padding: 10px 15px; font-size: 18px; cursor: pointer; }
+.leaf a:link, .tomato a:visited, .tomato a:hover, .tomato a:active { color:#22ff11; }
+.button {
+  font-family: Arial;
+  color: #ffffff;
+  font-size: 13px;
+  padding: 17px;
+  text-decoration: none;
+  -webkit-border-radius: 7px;
+  -moz-border-radius: 7px;
+  border-radius: 7px;
+  text-shadow: 0px 1px 3px #000000;
+  border: solid #918c8e 0px;
+  background: -webkit-gradient(linear, 0 0, 0 100%, from(#7e966c), to(#1b241c));
+  background: -moz-linear-gradient(top, #7e966c, #1b241c);
+}
+.button:hover {
+  background: #628f3a;
+  cursor: pointer;
+}

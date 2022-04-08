@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/addons/p5.sound.min.js"></script>-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="setup.js"></script>
+    <script src="flower1.js"></script>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <style>
+    html,body{font-family: Arial;background-color: #000;}
+    .container {
+        margin: 0 auto;
+        border: 0px solid black;
+        width: 80%;
+        color: #fff;
+        border-radius: 3px;
+        background-color: #2d302a;
+        text-align: center;
+        padding-top: 33px;
+    }
+
+    .button {
+        
+        cursor: pointer;
+        font-size: 20px;
+    }
+    .letterg {
+        font-size: 18px;
+        color: #fff;
+        padding-left: 0px;
+        
+    }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+          <h2 style="color:#aaa; padding-bottom: 50px;">Flowerbill . <i style="font-size:14px;">issue your money</i> </h2>  
+    </div>
+    <script>
+    var nameimg = ''
+    var img
+    var imgsize = { w: 10, h: 10, propor: 1, cursor: 40, posx: 0, posy: 0 }
+    var cfoto = []
+    var expiration=''
+    var bills = [0, 1, 2, 5, 10, 20, 50]
+    //var nbills=[0,20,20,20,20,20,10]
+    var nbills = [0, 3, 3, 3, 3, 3, 3]
+    //var url = location.href.split('?')
+    //var h1 = url[1].split('id=')
+    //var hash = h1[1]
+    var urli = location.href.split('?')
+    var url=urli[1]
+    var result = url.split('&').reduce(function (res, item) {
+            var parts = item.split('=');
+            res[parts[0]] = parts[1];
+            return res;
+    }, {});
+    var hash=result.id
+    var datenow=result.date
+
+    var yeh = 2000,
+        moh = 1
+    var flower=[]
+    var flowerbills=[]
+    
+    var isIn=false;
+    var nfile=-1
+
+
+    function sumbills() {
+        sum = 0
+        for (var a = 0; a < bills.length; a++) {
+            sum += bills[a] * nbills[a]
+        }
+        return sum
+    }
+
+    function preload() {
+        img = loadImage(nameimg);
+       
+    }
+
+    function makeStringWallet(){
+        var t=[]
+        if(!isIn){
+            t[0]=cfoto[0]
+        }
+        var mk=0
+        var pt=[]
+        //console.log(JSON.stringify(flowerbills))
+        for (var a=1;a<cfoto.length;a++){
+            //console.log(flowerbills[a][1])
+            for(var i=0;i<flowerbills[a][1];i++){
+                pt={}
+                pt.x=cfoto[a].x 
+                pt.y=cfoto[a].y
+                pt.n=cfoto[a].n
+                pt.d=cfoto[a].d
+                pt.o=cfoto[a].o
+                pt.i=cfoto[a].i
+                pt.exp=exp1+' '+exp2
+                pt.emi=inexp1+' '+inexp2
+                pt.am=flowerbills[a][0]
+                mk=makeid(10)
+                pt.id=mk
+                pt.title=''
+                pt.msg=''
+                pt.key=''
+                t.push(pt)
+            }
+        }
+        
+        return t
+    }
+
+ function makeStringBank(){
+        var t=[]
+        if(!isIn){
+            //t[0]=cfoto[0]
+        }
+        var mk=0
+        var pt=[]
+        //console.log(JSON.stringify(flowerbills))
+        for (var a=1;a<cfoto.length;a++){
+            //console.log(flowerbills[a][1])
+            for(var i=0;i<flowerbills[a][1];i++){
+                pt={}
+                pt.x=cfoto[a].x 
+                pt.y=cfoto[a].y
+                pt.n=cfoto[a].n
+                pt.d=cfoto[a].d
+                pt.o=cfoto[a].o
+                pt.i=cfoto[a].i
+                pt.exp=exp1+' '+exp2
+                pt.emi=inexp1+' '+inexp2
+                pt.am=flowerbills[a][0]
+                mk=makeid(10)
+                pt.id=mk
+                t.push(pt)
+            }
+        }
+        
+        return t
+    }
+
+    function setup1() {
+
+        var s = sumbills()
+
+        //JSON.stringify(bills)
+        var ch = ''
+        var bill = bills.slice(1, 13);
+        var nbill = nbills.slice(1, 13);
+        var sumb = nbill.reduce(function(a, b) { return a + b; }, 0);
+
+        ch += '<p> Bills: ' + bill.join(' ') + '</p>'
+        ch += '<p> Amount Bills: ' + nbill.join(' ') + ' = ' + sumb + '</p>'
+        ch += '<p> Total amount: ' + s + '<i>f</i></p>'
+        ch += '<p> Expiration date: ' + exp1+' '+exp2 + '</p>'
+        ch += '<hr style="width:100px;"><br>'
+        expiration=exp1+"\n"+exp2
+        flowerbills=[[0,0]]
+        for(var a=1;a<=6;a++){
+           ch+='<p style="80%"><span id="bill'+a+'"></span><b class="letterg"> '+nbills[a]+' / '+(bills[a]*nbills[a])+'<i>f</i></b></p>'
+           flowerbills.push([bills[a],nbills[a]])
+        }
+        
+        if(isIn){
+            ch+='<p><button class="button" id="emissionbutAgain" style="margin-top:90px;">Issue this money in your bank <b style="font-size:30px; color:#aaa;"></b></button></p>'
+        }else{
+            ch+='<p><button class="button" id="emissionbut" style="margin-top:90px;">Issue this money in your bank <b style="font-size:30px; color:#aaa;"></b></button></p>'
+        }
+
+        ch+='<p style="margin-top:90px;padding-bottom :50px;"> Happy Flower Bills!</p><br>'
+        //ch+='<p><br> <img src="'+nameimg+'"></p>'
+        $('.container').append(ch)
+        //for(var a=1;a<=6;a++){
+            //flower[a]=new Flower(,a,img,cfoto[0],cfoto[a],imgsize);
+        //}
+        draws()
+
+        $("#emissionbut").click(function() { 
+            var tx =makeStringWallet() 
+            tx[0].id=hash
+            tx2=[]
+            for (var a=1;a<tx.length;a++){
+                tx2.push(tx[a])
+            }
+            var tx3=JSON.stringify(tx2)
+            //console.log(tx2)
+            $.post("emissionBank.php", {
+                    name: 'append',
+                    coord: tx3
+                },
+                function(data, status) {
+                    //window.location.replace('wallet.html?id=' + cfoto[0].id);
+                    console.log('You are mined bills in your bank')
+                    window.location.replace('bank.html?id=' + cfoto[0].id);
+                    //console.log(data)
+                }
+            );
+            return false
+        });
+
+        $("#emissionbutAgain").click(function() { 
+            var tx = makeStringWallet() 
+            tx2=JSON.stringify(tx)
+            cfoto[0].id=hash
+            //console.log(tx2)
+            $.post("emissionBank.php", {
+                    name: 'into',
+                    coord: tx2,
+                    n: nfile
+                },
+                function(data, status) {
+                    //window.location.replace('wallet.html?id=' + cfoto[0].id);
+                    console.log('You are mined bills in your bank')
+                   window.location.replace('bank.html?id=' + cfoto[0].id);
+                  
+                }
+            );
+            return false
+            
+        });
+    }
+    
+    
+
+    $(document).ready(function() {
+        //hash=GetURLParameter(window.location)
+        isIn=false
+        var isinfile=-1
+        if (hash.length == 50) {
+            $.post('viewer.php', { name: 'isIn', n: -1,  hash: hash }, function(isinf) {
+                var isinfile=parseInt(isinf)
+                if (isinfile>-1){
+                    isIn=true
+                    nfile=isinfile
+                    //console.log(isinFile)
+                }
+                //alert(nfile+' '+isIn + ' '+ hash)
+                $.post('viewer.php', { name: 'readBank', n: 0, datenow : datenow, hash: hash }, function(data) {
+                   console.log('Data bank: '+data) 
+                   if(data.length>50){
+                       cfoto = JSON.parse(data)
+                       slices = cfoto[0].n
+                        //inpt.value(JSON.stringify(cfoto))
+                       started = true
+                       nameimg = 'upload/' + cfoto[0].img + '.jpg'
+                       //alert(nameimg)
+                    }
+                    
+                    setTimeout(function() {
+                        setup1()
+                    }, 2000);
+                });
+             });
+        } else {
+            document.write('<h3>We need a collectio billet id</h3>')
+        }
+
+    });
+
+
+
+   function draws(){
+    let screens = 6;
+    for (let k = 1; k <= screens; k++) {
+      setTimeout(function(){
+        var t = function(p) {
+            p.preload= function() {
+                img = p.loadImage(nameimg);
+           }
+            p.setup = function() {
+                var myc=p.createCanvas(cfoto[0].W, cfoto[0].W);
+                myc.parent("#bill"+k);
+                p.imageMode(p.CENTER);
+                
+                pp=1
+                imgsize={w:cfoto[0].w,h:cfoto[0].h,propor:1,cursor:40,posx:0,posy:0}
+
+                flower[k]=new Flower(p,k,img,cfoto[0],cfoto[k],imgsize);
+            };
+            p.draw = function() {
+                if(img){
+                    flower[k].change(k,cfoto[k])
+                    flower[k].display()
+                    flower[k].drawText(bills[k],expiration)
+                    p.noLoop()
+                }
+            };
+        };
+        var myp5 = new p5(t);
+         }, 1000 * k);  
+
+    }
+
+}
+    </script>
+</body>
+
+</html>
