@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="modal-box.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/p5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/addons/p5.dom.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/addons/p5.sound.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" referrerpolicy="no-referrer"></script>
+    <script src="modal-box.min.js" type="text/javascript"></script>
+    <script src="setup.js"></script>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <style>
+      html,body{font-family: Arial;background-color: #000;}
+      .container {
+              margin: 0 auto;
+              border: 0px solid black;
+              width: 80%;
+              color: #fff;
+              border-radius: 3px;
+              background-color: #2d302a;
+              text-align: center;
+              padding-top: 33px;
+        }
+
+      .preview{
+         width: 100px;
+         height: 100px;
+         border: 1px solid black;
+         margin: 0 auto;
+         background: white;
+      }
+
+      .preview img{
+         display: none;
+      }
+      /* Button */
+      .button{
+        
+      }
+    </style>
+    <script>
+ var person=''
+  $(document).ready(function(){
+     $.post('one.php', {name:'user'} ,function(data){
+                if(data.length>10){
+                    location.href='wallet.html?id='+data
+                }else{
+                     
+                }
+    })
+    $("#but_upload").click(function(){
+         
+
+        var fd = new FormData();
+        var files = $('#fileToUpload')[0].files;
+        var mk=makeid(50)
+        $('#iden').val(mk)
+        // Check file selected or not
+        if(files.length > 0 ){
+           fd.append('fileToUpload',files[0]);
+           fd.append('iden',mk)
+           var emit=inexp1+' '+inexp2
+           var expir=exp1+' '+exp2
+           $.ajax({
+              url: 'upload.php',
+              type: 'post',
+              data: fd,
+              contentType: false,
+              processData: false,
+              success: function(response){
+                 //if(response != 0){
+                    //$("#img").attr("src",response); 
+                    //$(".preview img").show(); // Display image element
+                    //alert(response)
+                   
+                   setTimeout(function() {
+                      //alert('response '+ response)
+
+                    
+                      $.post('nwallet.php', { name:'nWallet', img: mk, emit:emit, expir:expir,person:person} ,function(data){
+                            //alert(data)
+                            //if(data.length==50){
+                               //location.href="wallet.html?id="+mk
+                               //alert(data)
+                               location.href='wallet.html?id='+data
+                           //}
+                       });
+
+                      //location.href='editor.html?id='+mk
+                    
+                    }, 2000);
+                 //}else{
+                    //alert(response);
+                 //}
+              },
+           });
+        }else{
+           alert("Please select a file.");
+        }
+    });
+});
+</script>
+</head>
+
+<body>
+    <div id="fbmodal">
+        <div class="wg-header"></div>
+        <div class="wgcontent"></div>
+    </div>
+    
+    <div class="container">
+        <!-- <form method="post" action="" enctype="multipart/form-data" id="myform">
+       <div class='preview'>
+            <img src="" id="img" width="100" height="100">
+        </div>
+        <div >
+            <input type="file" id="file" name="file" />
+            <input type="button" class="button" value="Upload" id="but_upload">
+        </div>
+    </form>-->
+        <h2 style="color:#888; padding-bottom: 40px;">Flowerbill . <i style="font-size:14px;">Make your wallet</i></h2>
+        <form action="" method="post" enctype="multipart/form-data" style="padding-bottom: 60px;">
+            Select image to upload:
+            <input type="file" name="fileToUpload" id="fileToUpload">
+            <input type="hidden" name="iden" id="iden">
+            
+       
+
+        <div  style=" margin: 0 auto;padding: 40px 40px;width:40%; color: #ddd;" >
+          You must choose a private image as the basis of the design of your money<br>
+          Your image should not have a lot of white space. With many details. Flowers or vegetation better
+        </div> 
+            <input type="button" class="button" value="Upload Image" id="but_upload" name="but_upload">
+      </form>
+    </div>
+</body>
+
+</html>
