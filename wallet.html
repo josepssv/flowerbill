@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!--<link href="https://fonts.googleapis.com/css?family=Tajawal" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed" rel='stylesheet' type='text/css' />-->
+    <link rel="stylesheet" type="text/css" href="modal-box.min.css" />
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.1/p5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.1/addons/p5.sound.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> 
+    <script src="../p5.sound.min.js"></script>
+-->
+    <script src="../p5.min.js"></script>
+    <script src="../jquery-3.6.0.min.js"></script>
+    <script src="modal-box.min.js" type="text/javascript"></script>
+    <script src="setup.js"></script>
+    <script src="flower1.js"></script>
+    <script src="autocomposer-js.js"></script>
+    <script src="download.js"></script>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <style>
+    html,
+    body {
+        font-family: Arial;
+        background-color: #4d505a;
+    }
+
+    .container {
+        margin: 0 auto;
+        border: 0px solid black;
+        width: 80%;
+        color: #fff;
+        border-radius: 3px;
+        background-color: #4d505a;
+        text-align: center;
+        padding: 33px;
+    }
+
+    .button {
+        border: 0px;
+        background-color: deepskyblue;
+        color: white;
+        padding: 5px 15px;
+        margin-left: 10px;
+    }
+
+    .letterg {
+        font-size: 18px;
+        color: #fff;
+        padding-left: 0px;
+
+    }
+
+    .selectedbill {
+        width: 84px;
+        height: 84px;
+        font-size: 1px;
+    }
+    </style>
+</head>
+
+<body>
+    <div id="fbmodal">
+        <div class="wg-header"></div>
+        <div class="wgcontent"></div>
+    </div>
+    <div class="container">
+    </div>
+    <script>
+
+    
+    var nameimg = ''
+    var img
+
+    var imgsize = { w: 10, h: 10, propor: 1, cursor: 40, posx: 0, posy: 0 }
+    var cfoto = []
+    var expiration = ''
+    var bills = [0, 1, 2, 5, 10, 20, 50]
+    //var nbills=[0,20,20,20,20,20,10]
+    var nbills = [0, 5, 5, 5, 5, 5, 5]
+    var url = location.href.split('?')
+    var bank = window.location.href.split('?')[0] + '/bank.html'
+    var h1 = url[1].split('id=')
+    var hash = h1[1]
+  
+    var flower = []
+    var flowerbills = []
+
+
+
+    var numbills = 1
+    var billcollect = []
+    var ssec = []
+    var dya = [],
+        dya1 = [],
+        dy2 = []
+    var firstel
+    var groupbillIni = []
+    var groupbill = []
+    var groupid = []
+    var flowerbigdraw
+    var flowerbig
+    var actualdraw={}
+    var mychords=[]
+
+    function groupBy01(collection, property) {
+        var i = 0,
+            val, index,
+            values = [],
+            result = [];
+        for (; i < collection.length; i++) {
+            val = collection[i][property];
+            index = values.indexOf(val);
+            if (index > -1)
+                result[index].push(collection[i]);
+            else {
+                values.push(val);
+                result.push([collection[i]]);
+            }
+        }
+        return result;
+    }
+
+    function groupBy(collection, property) {
+        var i = 0,
+            val, val1, val2, index, index1,
+            values = [],
+            result = [],
+            key = '',
+            allkey = [],
+            k = '',
+            detect = 0;
+        for (; i < collection.length; i++) {
+            //k = allkey.indexOf(key);
+
+            val = collection[i][property[0]];
+
+            val1 = collection[i][property[1]];
+            val2 = collection[i][property[2]];
+            key = val + '-' + val1 + '-' + val2;
+            index = values.indexOf(key);
+
+            if (index > -1) {
+                result[index].push(collection[i]);
+            } else {
+                values.push(key);
+                result.push([collection[i]]);
+            }
+        }
+        return result;
+    }
+
+   
+
+    function compare(property) {
+        var sortOrder = 1;
+        if (property[0] === "-") {
+            sortOrder = -1;
+            property = property.substr(1);
+        }
+        return function(a, b) {
+            /* next line works with strings and numbers, 
+             * and you may want to customize it to your needs
+             */
+            var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
+            return result * sortOrder;
+        }
+    }
+
+
+
+    function preload() {
+        img = loadImage(nameimg);
+
+    }
+
+    function amount() {
+        var amount = 0
+        for (var a = 1; a < cfoto.length; a++) {
+            amount += cfoto[a].am
+        }
+        return amount
+    }
+
+    function sumamount() {
+        var amount = 0
+        for (var a = 0; a < ssec.length; a++) {
+            amount += ssec[a][2]
+        }
+        return amount
+    }
+
+var ch1=getRandomInt(0, chords.length-1)
+var ch2=getRandomInt(0, chords.length-1)
+var chordProgression=[chords[ch1],chords[ch2]]
+
+function playbill2(ch1,ch2){
+     var n1=mychords[ch1]
+     var n2=mychords[ch2]
+     //var ch3=getRandomInt(0, mychords.length-1)
+     var chn=[n1,n2]
+          //alert(JSON.stringify(chn))
+          //
+    AutoComposerJS.midiPlayer.playMelodySolo(chn);
+           //AutoComposerJS.midiPlayer.playMelodyWithAccompaniment(am[2][0],am[2][1],am[2][2])
+          //AutoComposerJS.midiPlayer.playMelodySolo(am);
+          // $("#downloadb").click(function() {
+    //download(strMidi)
+          //});
+}
+
+
+    Array.prototype.remove = function(from, to) {
+        var rest = this.slice((to || from) + 1 || this.length);
+        this.length = from < 0 ? this.length + from : from;
+        return this.push.apply(this, rest);
+
+    };
+    function redrawflower(k){
+        actualdraw=dya[k][groupbill[k]];
+        //var ix = parseInt(Math.random() * (cfoto[0].w - 200))
+        
+        var ix = randomInt(0,firstel.w-200)
+        var iy =randomInt(0,firstel.h-200)
+        var id = randomInt(200 / 2, 200)
+        var nradius = par[randomInt(0,par.length - 1)]
+        
+        var io = Math.random()
+        actualdraw.x=ix
+        actualdraw.y=iy
+        //actualdraw.x=ix
+        //actualdraw.y=iy
+         actualdraw.n=nradius
+         actualdraw.d=id
+        //dya[k][groupbill[k]].d=id
+          actualdraw.o=io
+        //flowerbigdraw.remove()
+        //drawbig(k, 200, true )
+        flowerbigdraw.draw()
+    }
+
+    function removeit(ch) {
+        var index = 0
+        var sel = -1
+        //alert('ch:'+ch+' ssec:'+JSON.stringify(ssec))
+        for (var a = 0; a < ssec.length; a++) {
+            index = ssec[a].indexOf(ch);
+            if (index > -1) {
+                sel = a
+                break;
+            }
+        }
+        if (sel > -1) {
+            xbill = ssec[sel][0]
+            //alert(xbill+' ' + groupbill[xbill]+ ' ' + groupbillIni[xbill]) 
+
+            var gd = groupbill[xbill]
+           if (gd <= groupbillIni[xbill]) {
+                $('#bill' + xbill).show()
+                billcollect[xbill].draw()
+                billcollect[xbill].tumb()
+
+            }
+            if (gd < groupbillIni[xbill]) { groupbill[xbill]++ }
+            //var gd = groupbill[xbill]
+            //alert ('que boton orden: '+sel+'  que billete:'+xbill+'  contadorBilles:'+amd +' Sumando uno:'+gd)
+            //-->if(gd==(groupbillIni[xbill])){groupbill[xbill]=(groupbillIni[xbill])}
+            //if(groupbill[xbill]==0){groupbill[xbill]=1} 
+            ssec.splice(sel, 1);
+        }
+        return false
+    }
+
+
+    function copy(element) {
+        var $temp = $("<input>");
+        $("body").append($temp);
+        $temp.val($(element).text()).select();
+        document.execCommand("copy");
+        $temp.remove();
+    }
+
+
+
+
+    function setup1() {
+        //dyarr=cfoto.sort( compare('am') );
+        //dyarr1=cfoto.splice(1,cfoto.length)
+        var am = amount()
+        numbills = cfoto.length - 1
+        //duplicated - review this
+        personal.flowers=numbills
+        personal.amount=am
+        personal.remainFlowers=personal.flowersLimit-personal.flowers
+        personal.remainAmount=personal.amountLimit-personal.amount
+        
+        //JSON.stringify(bills)
+        var ch = ''
+
+        ch += '<div style="position:relative;width:100%;top:200px;">'
+        for (var a = 0; a < dya.length; a++) {
+            //var nkey=getRandomInt(0, WLjams.length)
+            //var nw=WLjams[nkey]
+            //dya[a][groupbill[a]].key=nkey
+            //dya[a][groupbill[a]].title=nw.name
+            ch += '<div style="display:inline-block;margin-top:50px;width:220px;text-align:center;max-width:220px;max-height:220px;" class="dbill" id="mbill' + a + '"><span id="bill' + a + '" style="cursor:pointer;" class="billed"></span><br><button id="toview' + a + '" class="view button" style="visibility:visible;">' + dya[a][groupbill[a]].title + '</button></div>'
+        }
+
+        ch += '<p style="margin-top:90px;padding-bottom :50px; "> Happy Flower Bills!</p><br>'
+        ch += '</div>'
+
+
+
+
+        ch += '<div style="position:fixed; left:0px;top:0px; padding-top:5px; width:100%;text-align:center; background-color:#2d302a;;">'
+
+        ch += '<div style="color:#ddd;">'
+        ch += '<button style="margin-left:40px;"  type="button" id="transfer" class="button">Transfer</button>'
+        ch += '<button id="sendBank" style="margin-left:40px;" class="button"  style="display:inline-block;">Send to Bank</button>'
+        ch += '<button id="goBank" style="margin-left:40px;" class="button" style="display:inline-block;">Go to Bank</button>'
+        ch += '<button id="delete" style="margin-left:40px;" class="button" style="display:inline-block;">Delete Bills</button>'
+       ch += '<button id="printbills" style="margin-left:40px;" class="button" style="display:inline-block;">Print Bills</button>'
+        ch += '</div>'
+        // end header 1
+
+
+        //header 2
+        ch += '<div style="color:#aaa;"><div style="display:inline-block; color:#888;font-size:26px;">Flowerbill Wallet  <br>'
+        ch += '<span style="font-size:12px;color:#aaa;">Key for share:&nbsp;&nbsp;&nbsp;<i id="keyshare">' + cfoto[0].img + '</i></span> <br>'
+        ch += '</div>'
+
+
+        ch += '<div style="margin-left:40px;display:inline-block; font-size:22px;"><span> Bills: </span><span id="totalFlowers">' + numbills + '</span><br>'
+        //ch += '<p> Amount Bills: ' + s + '</p>'
+        ch += '<span> Total amount: <span id="totalamount">' + am + '</span><i>f</i></span> '
+
+        ch += '</div>'
+        ch += '<div style="margin-left:40px;display:inline-block; margin-top:10px;font-size:22px;font-size:14px;color:#666;">'
+        ch += '<span style="font-size:14px;color:#666;">limit: <span id="limitflowers">' + limitFlowers + '</span> <i>bills</i></span>&nbsp;/&nbsp;<span style=""><span id="limitAmount">' + limitAmount + '</span> <i>f</i></span><br>'
+        ch += '<span style="">My credit: <span id="personalLimitflowers">' + personal.remainFlowers + '</span>&nbsp;<i>bills</i></span>&nbsp;'
+                ch += '/&nbsp;<span id="personalLimitAmount">' + personal.remainAmount + '</span> <i>f</i><br>'
+        ch += '</div>'
+        ch += '</div>'
+        // end header 2
+
+
+        //header 3
+        ch += '<div style="margin-top:10px; display:none;">'
+        //ch += '<label for="sendto">Send to </label> <input size="22" type="text" id="sendto">'  
+        ch += '<span style="margin-left:40px;">Amount </span> <span id="amountspan" style="background-color:#fff;color:#000;padding:2px 12px;">0</span><input type="hidden" id="amount" name="amount" ><input type="hidden" id="idbills" name="idbills">'
+        ch += '<input size="4" type="hidden" id="bills" name="bills">'
+        ch += '</div>'
+        // end header 3
+
+
+        //header 4
+        ch += '<div style="color:#999;margin-top:22px;margin-bottom:40px;"><div id="aselectedBills" style"display:inline-block;"></div> <span id="selectedSpan" style="background-color:#f44;width:60%;"> </span></div>'
+        ch += '</div>'
+
+
+
+        $('.container').html(ch)
+
+        draws()
+
+
+        var modalsend = $("#fbmodal").wgModal();
+        var actclic=0
+        var limitTitle=40
+        var limitArea= 320
+        $(".view").click(function() {
+            predya=dya 
+            cfoto=dya1
+            dya=predya
+            a = this.id
+            b = a.split('toview')
+            c = parseInt(b[1])
+            actclic=c
+            var big = 'big'
+            var ch = ''
+            //var msgb=dya[c][groupbill[c]].msg;
+            //var nkey=parseInt(Math.random()*240500+100000)
+             //var nkey=getRandomInt(10000, 240500)
+             //var nkey=getRandomInt(0, WLjams.length)
+             //var nkey=dya[c][groupbill[c]].key
+            //-->var nw=WLjams[nkey]
+            //-->var msgb='#'+nw.key+ ' ' +nw.name+ ' ' +nw.bpm+''
+            //-->var msgb2='<a href="https://www.wikiloops.com/backingtrack-jam-'+nw.key+'.php" target="_blank">'+msgb+'</a>'
+
+            //-->var musicLink='https://www.wikiloops.com/backingtrack-jam-'+nw.key+'.php'
+            
+            ch+='<span style="padding-right:70px;">Title and text</span>'
+            ch+='<input type="text" name="btitle" id="btitle" onkeydown="limitch(this,'+limitTitle+');" onkeyup="limitch(this,'+limitTitle+');" value="'+dya[c][groupbill[c]].title+'">'
+            ch+='<br>'
+            ch+='<br><textarea id="musicLink" style="width:80%;" onkeydown="limitch(this,'+limitArea+');" onkeyup="limitch(this,'+limitArea+');">'+dya[c][groupbill[c]].msg+'</textarea><br>'
+            //ch+='<div style="margin-top:10px; width:600px;max-width:600px;max-height:600px;" id="chbillbig"></div>'
+            ch+='<div style="display:inline-block;margin-top:10px; width:130px;max-width:130px;max-height:200px;" id="optionsbig">'
+            ch+='<button class="button" id="playchordb">Play</button>'
+            ch+='<button class="button" id="downloadb" style="margin-bottom:30px;">Download</button><br>'
+            ch+='Value<br>'
+            ch+='<button class="button amb" id="am1">1</button>'
+            ch+='<button class="button amb" id="am2">2</button>'
+            ch+='<button class="button amb" id="am5">5</button><br>'
+            ch+='<button class="button amb" id="am10">10</button>'
+            ch+='<button class="button amb" id="am20">20</button>'
+            ch+='<button class="button amb" id="am50">50</button>'
+            ch+='</div>'
+            ch+='<div style="display:inline-block;margin-top:10px; width:230px;max-width:230px;max-height:230px;"><span id="bill' + big + '" style="" class="billed"></span></div>'
+            ch+='<div style="display:inline-block;margin-top:10px; width:130px;max-width:130px;max-height:200px;" id="expdateOptions">'
+            ch+='<button class="button" id="reDraw" style="margin-bottom:60px";>Redraw</button><br>'
+            ch+='Expiration date<br>'
+            ch+='<button class="button edb" id="ed1">1</button><br>'
+            ch+='<button class="button edb" id="ed2">2</button><br>'
+            //ch+='<button class="button edb" id="ed3">3</button><br>'
+            //ch+='<button class="button edb" id="ed4">4</button><br>'
+            ch+='</div>'
+            ch+='<div style="display:inline-block;margin-top:10px; width:130px;max-width:130px;max-height:200px;" id="Savechange">'
+             
+            ch+='<button class="button" id="savech">Save</button><br>'
+            ch+='</div>'
+            //ch+='<div style="display:inline-block;margin-top:10px; width:130px;max-width:130px;max-height:200px;" id="Savechange">'
+            //ch+='<button class="button" id="duplicate">Duplicate</button>'
+            //ch+='</div>'
+            ch+='<div style="display:inline-block;margin-top:10px; width:130px;max-width:130px;max-height:200px;" id="Savechange">'
+            ch+='<button class="button" id="newb">New</button>'
+            ch+='</div>'
+
+            modalsend.openModal();
+            $(".wg-header").html('')
+            $(".wgcontent").html(ch)
+            W = 200
+            var drawtext=true
+            actualdraw=dya[c][groupbill[c]]
+            drawbig(c, W, drawtext )
+            
+            //flowerbigdraw.draw()
+            
+           /* setTimeout(function() {
+                var dt = flowerbigdraw.tumb() 
+                $('#encodet').text(dt)
+                //flowerbigdraw.tumb1()
+                //flowerbigdraw.pickangle(2)
+                //var bright=flowerbigdraw.pickposColor()
+               
+            }, 2000 );
+            
+            */
+           
+            modalsend.onAfterClose=function(){$(".wg-header").html('')}
+
+            /*$('#viewtext').click(function() {
+                flowerbigdraw.remove()
+                //$('#mbillbig').html('')
+                drawtext = !drawtext
+                //flowerbigdraw.text() 
+                drawbig(c, W, drawtext )
+                if(drawtext){
+                    $(this).html('View image')
+                }else{
+                    $(this).html('View text')
+                }
+            });
+            */
+
+            $('.amb').click(function() {
+                var ta=this.id.split('am')
+                var ta1=parseInt(ta[1])
+                dya[actclic][groupbill[actclic]].am=ta1
+                
+                //flowerbigdraw.remove()
+                //drawtext=true
+                //$('#viewtext').html('View image')
+                //alert(JSON.stringify(c))
+                actualdraw=dya[actclic][groupbill[actclic]]
+                flowerbigdraw.draw()
+                //drawbig(actclic, W, drawtext )
+                
+            });
+            $('.edb').click(function() {
+                var ta=this.id.split('ed')
+                var ta1=parseInt(ta[1])
+                var dade=makedate(ta1)
+                dya[actclic][groupbill[actclic]].exp=dade[0]+' '+dade[1]
+                //flowerbigdraw.remove()
+                //drawtext=true
+                //$('#viewtext').html('View image')
+                //alert(JSON.stringify(c))
+                actualdraw=dya[actclic][groupbill[actclic]]
+                flowerbigdraw.draw()
+                //drawbig(actclic, W, drawtext )
+                
+            });
+
+           $('#reDraw').click(function() { 
+                redrawflower(actclic)
+            });
+            
+           $('#savech').click(function() { 
+                actualdraw.title=$('#btitle').val()
+                actualdraw.msg=$('#musicLink').val()
+                dya[actclic][groupbill[actclic]]=actualdraw
+                dya[actclic][groupbill[actclic]].title=$('#btitle').val()
+                dya[actclic][groupbill[actclic]].msg=$('#musicLink').val()
+                billcollect[actclic].draw()
+                billcollect[actclic].tumb()
+                var newbill=JSON.stringify(dya[actclic][groupbill[actclic]])
+                var idbills=JSON.stringify([dya[actclic][groupbill[actclic]].id])
+                var fto = hash
+                var ffrom = firstel.img
+                var msg=''
+                //alert(newbill)
+                $.post('replace.php', { name:'replace', ffrom: ffrom, fto: fto, idbills: idbills, newbill:newbill, msg: msg }, function(data) {
+                    $('#toview'+actclic).html($('#btitle').val())
+                    modalsend.closeModal();
+                    alert('Your bill has been replaced. \n' + data)
+                    //history.go(0)$('#btitle').val()
+                });
+                //)
+                //modalsend.closeModal();
+            });
+           $('#newb').click(function() { 
+                //alert(numbills+' '+ personal.flowersLimit)
+                if(numbills>=personal.flowersLimit-1){ alert('You have reached the limit of flowersbills');return }
+                actualdraw.title=$('#btitle').val()
+                actualdraw.msg=$('#musicLink').val()
+                var nid=makeid(10)
+                actualdraw.id = nid
+                var newbill=JSON.stringify(actualdraw)
+                //alert(newbill)
+                //var idbills=JSON.stringify([dya[actclic][groupbill[actclic]].id])
+                var fto = hash
+                var ffrom = firstel.img
+                var msg=''
+                $.post('append.php', { name:'append', ffrom: ffrom, fto: fto, newbill:newbill, msg: msg }, function(data) {
+                    modalsend.closeModal();
+                    alert('New bill has been inserted. \n' + '')
+                    history.go(0)
+                });
+                //)
+                //modalsend.closeModal();
+            });
+
+            setTimeout(function() {
+            var ch1=getRandomInt(0, mychords.length-1)
+            var ch2=getRandomInt(0, mychords.length-1)
+            playbill2(ch1,ch2)
+         }, 1000);
+
+        $('#playchordb').click(function() { 
+            var ch1=getRandomInt(0, mychords.length-1)
+            var ch2=getRandomInt(0, mychords.length-1)
+            playbill2(ch1,ch2)
+        })
+        $('#playchordb').click(function() { 
+            var ch1=getRandomInt(0, mychords.length-1)
+            var ch2=getRandomInt(0, mychords.length-1)
+            playbill2(ch1,ch2)
+        })
+
+        $('#downloadb').click(function() { 
+            download(strMidi)
+        })
+})
+        $('.dbill')
+            .on('mouseover', function(e) {
+                a = this.id
+                b = a.split('mbill')
+                c = parseInt(b[1])
+                //$('#toview' + c).css('visibility', 'visible')
+            })
+            .on("mouseout", function(e) {
+                a = this.id
+                b = a.split('mbill')
+                c = parseInt(b[1])
+                //$('#toview' + c).css('visibility', 'hidden')
+            });
+
+        $(document).on('click', (".billed"), function() {
+            a = this.id
+            b = a.split('bill')
+            c = parseInt(b[1])
+            //if(groupbill[c]>groupbillIni[c]){groupbill[c]=groupbillIni[c]}
+            idsec = dya[c][groupbill[c]].id
+            amsec = dya[c][groupbill[c]].am
+            nid = makeid(4)
+            //nid=groupid[c]
+            ssec.push([c, idsec, amsec, nid])
+            billcollect[c].draw()
+            billcollect[c].tumb()
+            var src = billcollect[c].tumb()
+            var cod = '<button class="selectedbill" id="sbill' + nid + '" style="cursor:pointer;background-image:url(' + src + ');">' + amsec + '</button>'
+            $('#selectedSpan').append(cod)
+            var d = sumamount()
+            var amd= am - d
+            var sse = ssec.length
+            $('#amountspan').html(d)
+            $('#aselectedBills').html(d)
+            $('#totalamount').html(amd)
+            if( (d==2 || d==5 || d==10 || d==20 || d==50) && sse > 1 ){
+                //alert( d +' '+ sse )
+                cnfrm=-1
+                if(confirm('Do you want to unite in a '+d+' bill? \n These bills will be joined equal to the first selected')){
+                    cnfrm=1
+                }
+                if(cnfrm=1){
+
+                }
+            }
+            var sbill = cfoto.length - 1 - sse
+            $('#totalFlowers').html(sbill)
+
+            groupbill[c]--
+            if (groupbill[c] < 0) { groupbill[c] = 0;
+                $(this).hide() } else {
+                billcollect[c].draw()
+                billcollect[c].tumb()
+            }
+
+        });
+
+        $(document).on('click', '.selectedbill', function() {
+
+            a = this.id
+            this.remove()
+            b = a.split('sbill')
+            c = b[1]
+            removeit(c)
+            var d = sumamount()
+            $('#amountspan').html(d)
+            $('#aselectedBills').html(d)
+            $('#totalamount').html(am - d)
+
+            var sbill = cfoto.length - 1 - ssec.length
+            $('#totalFlowers').html(sbill)
+
+
+        });
+
+
+        $(document).on('click', '#delete', function() {
+            solse = []
+            for (var a = 0; a < ssec.length; a++) {
+                solse.push(ssec[a][1])
+            }
+            if(solse.length==0){
+                return
+            }
+            var ffrom = cfoto[0].img
+            var amountval = $('#amountspan').text()
+            var nflower = solse.length
+            var idbills = JSON.stringify(solse)
+            var msg = amountval + ' ' + nflower
+            $('#idbills').val(idbills)
+            var texth = 'Deleting bills'
+            $(".wg-header").text(texth)
+            var textc = ''
+            textc += "<p>You are going to erase " + amountval + 'f in ' + nflower + ' flower(s)</p>'
+            textc += '<div style="margin:50px 50px;">'
+            textc += '<button id="cancel-send"> Cancel</button>'
+            textc += '<button id="deletebills"  class="button"  style="margin-left:50px;">Delete</button>'
+            textc += "<p>But you can donate to the common box (bank) " + amountval + 'f in ' + nflower + ' flower(s)</p>'
+            textc += '<button id="donatebills"  class="button"  style="margin-left:50px;">Donate</button>'
+            textc += '</div>'
+            
+            
+            $(".wgcontent").html(textc)
+
+            modalsend.openModal();
+
+            $('#cancel-send').click(function() {
+                modalsend.closeModal();
+            });
+
+            $('#deletebills').click(function() {
+                var fto = hash
+                $.post('delete.php', { name: 'delete', ffrom: ffrom, fto: fto, idbills: idbills, msg: msg }, function(data) {
+                    modalsend.closeModal();
+                    alert('Your money has been deleted. \n' + data)
+                    history.go(0)
+                });
+            });
+            $('#donatebills').click(function() {
+                var fto = hash
+                ffrom = cfoto[0].img
+                $.post('tobank.php', { name: 'donate', ffrom: ffrom, fto: fto, idbills: idbills, msg: msg }, function(data) {
+                    modalsend.closeModal();
+                    alert('Your money has donate to common box (bank). \n' + data)
+                    history.go(0)
+                });
+            });
+        })
+
+
+        $(document).on('click', '#transfer', function() {
+            //alert('try')
+           
+            solse = []
+            for (var a = 0; a < ssec.length; a++) {
+                solse.push(ssec[a][1])
+            }
+            if(solse.length==0){
+                return
+            }
+             $.post('one.php', {name:'users'} ,function(data){
+                if(data.length>10){
+                    var ffrom = cfoto[0].img
+                    var amountval = $('#amountspan').text()
+                    var nflower = solse.length
+                    var idbills = JSON.stringify(solse)
+                    var msg = amountval + ' ' + nflower
+                    $('#idbills').val(idbills)
+                    var texth = 'Send bills to another wallet'
+                    $(".wg-header").text(texth)
+                    var textc = ''
+                    textc += "<p>You are going to send " + amountval + 'f in ' + nflower + ' flower(s) to wallet </p>'
+                    textc += '<div>'+data+'</div><br>'
+                    textc += '<label for="sendto">Put the key wallet</label> <input size="42" type="text" id="sendto"><br>'
+                    textc += '<div style="margin:50px 50px;">'
+                    textc += '<button id="cancel-send"> Cancel</button>'
+                    textc += '<button id="sendbills"  class="button"  style="margin-left:50px;">Transfer</button>'
+                    textc += '</div>'
+                    //$(".wg-header").text(texth)
+                    $(".wgcontent").html(textc)
+
+                    modalsend.openModal();
+                    $('#cancel-send').click(function() {
+                        modalsend.closeModal();
+                    });
+
+                     $('.hashlink').click(function(){
+                        var nh=$(this).attr("value")
+                        $('#sendto').val(nh)
+                    })
+                    $('#sendbills').click(function() {
+                        var fto = $('#sendto').val()
+                        $.post('sendto.php', { name: 'sendto', ffrom: ffrom, fto: fto, idbills: idbills, msg: msg }, function(data) {
+                            alert('Your money has been sent. \n' + data)
+                            history.go(0)
+                        });
+                    });
+
+                }
+            })
+            
+            //var fto=$('#sendto').val()
+
+            //if (confirm("You are going to send "+amountval+ 'f in '+nflower+ ' flower(s) to wallet '+ fto)) {
+            //txt = "";
+            //} else {
+            //return false;
+            //}
+            /*
+                  
+             */
+        });
+
+
+        $("#sendBank").click(function() {
+
+            solse = []
+            for (var a = 0; a < ssec.length; a++) {
+                solse.push(ssec[a][1])
+            }
+            if(solse.length==0){return}
+            var fto = hash
+            var ffrom = firstel.img
+
+            var amountval = $('#amountspan').text()
+            var nflower = solse.length
+            var idbills = JSON.stringify(solse)
+            //var msg = amountval + ' ' + nflower
+            var msg=''
+            $('#idbills').val(idbills)
+            if (confirm("You are going to send " + amountval + 'f in ' + nflower + ' flower(s) to bank ' + fto)) {
+                txt = "";
+            } else {
+                return false;
+            }
+            //alert(ffrom+' '+idbills)
+            $.post('tobank.php', { name: 'donate', ffrom: ffrom, fto: fto, idbills: idbills, msg: msg }, function(data) {
+                alert('Your money has been sent to bank. \n' + '')
+                //history.go(0)
+                location.href="bank.html?id=" + hash
+            });
+
+        });
+
+
+
+        var timew;
+        $('#keyshare').hover(function() {
+            var that = this;
+            var msg = 'Click to copy'
+            $(this).attr('title', msg);
+            window.clearTimeout(timew);
+            timew = window.setTimeout(function() {
+                $(that).animate({ opacity: .5 }, 'slow').animate({ opacity: 1 });
+            }, 250);
+        });
+
+        $("#keyshare").click(function() {
+            copy(this)
+            var msg = 'Copied!'
+            $(this).attr('title', msg);
+        });
+
+
+
+        $(document).on('click', '#goBank', function() {
+            location.href = "bank.html?id=" + hash
+        });
+        $(document).on('click', '#printbills', function() {
+            nbill=cfoto.length
+            if(nbill<1){
+                alert('You must have more than 0 bill')
+                return
+            }
+            //location.href="editor.html?id="+cfoto[0].img
+            location.href = "print.html?id=" + hash
+        });
+
+    }
+
+    // END SETUP1
+    // NOT USED
+    function makeStringWallet() {
+        var t = []
+        t[0] = cfoto[0]
+        for (var a = 1; a < cfoto.length; a++) {
+            pt = cfoto[a]
+            pt.exp = exp1 + ' ' + exp2
+            pt.emi = inexp1 + ' ' + inexp2
+            for (var i = 0; i < flowerbills[a][1]; i++) {
+                pt.am = flowerbills[a][0]
+                pt.id = makeid(10)
+                t.push(pt)
+            }
+        }
+        return t
+    }
+
+    $(document).ready(function() {
+        //hash=GetURLParameter(window.location)
+
+
+        if (hash.length == 50) {
+            $.post('viewer.php', { name: 'read2', n: 0, hash: hash }, function(data) {
+                var oldURL = document.referrer;
+                var uo=oldURL.split('/')
+                var pruo=uo[uo.length-1]
+
+                
+                cfoto = JSON.parse(data)
+                dya1 = JSON.parse(data)
+                firstel = dya1[0]
+                if(pruo=='upload.html'){
+                    var text='This is your first time'+"\n"+'Save the address to be able to access it later'+"\n"+'Your name to other users is '+ firstel.name
+                    alert(text)
+                }
+                dya1.shift()
+                dya = groupBy(dya1, ['x', 'y', 'o'])
+
+                for (var a = 0; a < dya.length; a++) {
+                    groupbillIni[a] = dya[a].length - 1
+                    groupbill[a] = dya[a].length - 1
+                    nid = makeid(4)
+                    groupid[a] = nid
+
+                }
+                setTimeout(function() {
+                    setup1()
+                }, 2000);
+
+
+
+            });
+
+
+
+        } else {
+            document.write('<h3>We need a collectio billet id</h3>')
+        }
+
+
+        mychords=initSound(chordProgression)
+
+       
+
+    });
+
+
+   
+
+    function drawbill(k) {
+
+        var t = function(p) {
+            var img
+            var imgsize
+            var namei
+            p.preload = function() {
+                namei = 'upload/' + dya[k][groupbill[k]].i + '.jpg'
+                img = p.loadImage(namei);
+            }
+            p.setup = function() {
+                var myc = p.createCanvas(cfoto[0].W, cfoto[0].W);
+                myc.parent("#bill" + k);
+                //myc.style('display', 'inline-block')
+                p.imageMode(p.CENTER);
+                pp = 1
+                imgsize = { w: cfoto[0].w, h: cfoto[0].h, propor: 1, cursor: 40, posx: 0, posy: 0 }
+                flower[k] = new Flower(p, k, img, cfoto[0], dya[k][groupbill[k]], imgsize);
+            };
+            p.draw = function() {
+                if (img) {
+                    var exp = dya[k][groupbill[k]].exp.replace(' ', '\n')
+                    flower[k].change(k, dya[k][groupbill[k]])
+                    flower[k].display()
+                    flower[k].drawText(dya[k][groupbill[k]].am, exp)
+                    flower[k].textextra('x' + (groupbill[k] + 1))
+                    // $("#numbill"+(k-contb-1)).html(contb+1) 
+
+                    p.noLoop()
+                }
+            };
+            p.tumb = function() {
+                return flower[k].tumb()
+            }
+
+        };
+
+        billcollect[k] = new p5(t);
+    }
+
+
+    function draws() {
+        let screens = dya.length;
+        for (let k = 0; k < screens; k++) {
+            setTimeout(function() {
+                drawbill(k)
+            }, 600 * k);
+
+        }
+
+    }
+
+    function drawbig(k, W, txt) {
+        
+        var t = function(q) {
+            var tdya=dya[k][groupbill[k]]
+            var img
+            var namei
+            var imgsize
+            
+            q.preload = function() {
+                //namei = 'upload/' + dya[k][groupbill[k]].i + '.jpg'
+                namei = 'upload/' + tdya.i + '.jpg'
+                img = q.loadImage(namei);
+            }
+            q.setup = function() {
+                var myc = q.createCanvas(W, W);
+                myc.parent("#billbig");
+                //myc.style('display', 'inline-block')
+                q.imageMode(q.CENTER);
+                
+                imgsize = { w: cfoto[0].w, h: cfoto[0].h, propor: 1, cursor: 40, posx: 0, posy: 0 }
+                var cf = cfoto[0]
+                cf.W = W
+                flowerbig = new Flower(q, k, img, cf, tdya , imgsize);
+            };
+            q.draw = function() {
+                if (img) {
+
+                    var exp = actualdraw.exp.replace(' ', '\n')
+                    //alert(k, JSON.stringify(tdya))
+                    var am=actualdraw.am
+                    //var exp=dya[k][groupbill[k]].exp
+                    flowerbig.change(k, actualdraw)
+                    flowerbig.display()
+                    //flowerbig.drawText(dya[k][groupbill[k]].am,' ')
+                    if(txt){
+                      flowerbig.drawText(am,exp)
+                     }
+                    //flowerbig.drawText(' ',' ')
+                    //flowerbig.textextra('x'+(groupbill[k]+1))
+                    //flowerbig.textextra(' ')
+                    // $("#numbill"+(k-contb-1)).html(contb+1) 
+                    q.noLoop()
+                }
+            };
+            q.tumb = function() {
+                var fbt=flowerbig.tumb()
+                return fbt      
+            };
+            q.tumb1 = function() {
+                flowerbig.tumb1()
+                    
+            };
+            q.pickangle=function(a){
+                flowerbig.pickangle(a)
+            }
+            q.pickposColor=function(){
+                flowerbig.pickposColor()
+            }
+
+        };
+
+        flowerbigdraw = new p5(t);
+    }
+    </script>
+</body>
+
+</html>

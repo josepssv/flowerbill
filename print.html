@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/addons/p5.sound.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="setup.js"></script>
+    <!--<script src="flower1.js"></script>-->
+    <script src="flower2print.js"></script>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <style>
+        html,body{font-family: Arial;background-color: #000;}
+      .container {
+              margin: 0 auto;
+              border: 0px solid black;
+              width: 80%;
+              color: #fff;
+              border-radius: 3px;
+              background-color: #2d302a;
+              text-align: center;
+              padding-top: 33px;
+        }
+
+      .preview{
+         width: 100px;
+         height: 100px;
+         border: 1px solid black;
+         margin: 0 auto;
+         background: white;
+      }
+
+      .preview img{
+         display: none;
+      }
+      /* Button */
+      .button{
+         border: 0px;
+         background-color: #99aaaa;
+         color: white;
+         padding: 5px 15px;
+         margin-left: 10px;
+      }
+    </style>
+</head>
+
+<body>
+    <h2 style="color:#aaa; padding-bottom: 50px;">Flowerbill . <i style="font-size:14px;">Print</i> </h2>
+    <div id="goleft" style="cursor: pointer;position: absolute;display:none;font-size:40px;width: 50px;font-weight: 800;background-color: transparent;color:#fff;">ᐸ</div>
+    <div id="goright" style="cursor: pointer;position: absolute;display:none;font-size:40px;width: 50px;font-weight: 800;background-color: transparent;color:#fff;">ᐳ</div>
+    <div id="trip" style="display:none;">
+        <button type="text" class="button" id="saveb" style="display:inline-block;">Save image</button>
+        <button type="text" class="button" id="imageVSbill" style="display:inline-block;">As bill</button>
+        <button type="text" class="button" id="others" style="display:inline-block;">Others</button>
+        <button type="text" class="button" id="one" style="display:inline-block;">Multiple</button><br>
+        <div style="margin-top: 50px;">&nbsp;</div>
+    </div>
+    <form id="form1" method="post">
+        <button id="inum" type="text" style="display:none;">n</button><input id="urli" value="olivilla.jpg" size=12 style="display:none;"><textarea id="coord" style="display:none;"></textarea> </form>
+    <div id="cont" style="font-size:40px;color:#ddaaaa;display:none;"></div>
+    <button id="showl" style="display:none;">ᐸ</button>
+    <button id="reloadi" style="display:none;">Reload</button>
+    <button id="showr" style="display:none;">ᐳ</button>
+    <div id="sample" style="display:none;position:absolute;">
+        <div style="position:relative;top:0px,left:0px;margin:0;padding:0px;">
+            <div id="ipoint" style="position:absolute;width:40px;height:40px;top: 10px;left:10px;background-color: #000;background-color:transparent;border-style:solid;border-width:2px;"></div>
+        </div>
+    </div>
+    <script>
+    var angle;
+    var angle2;
+    var radius;
+    var shape;
+    var shape2;
+    var offset = 0;
+    var factor;
+
+    var aangle1 = 0;
+    var aangle2 = 0;
+    var sangle = 0;
+    var aini1 = 0;
+    var aini2 = 0;
+    var offset = 0;
+    var centerx = 0;
+    var centery = 0;
+    var diagonal2 = 100;
+    var W = 400;
+    var H = 400;
+    var clickCount = 1;
+    var contSaved = 0;
+    var coord;
+    var inpt;
+    var contdiv;
+    var showr, showl, reloadi, savef, inum, form1
+    var contf = 1
+
+    var cfoto = []
+
+    var img = [];
+    var started = false
+    var imgsize = { w: 10, h: 10, propor: 1, cursor: 40, posx: 0, posy: 0 }
+    var billcanvas
+    var flowerprint = []
+    var flower1
+    var flower2
+    var hash = ''
+    
+    var bills = [0, 1, 2, 5, 10, 20, 50]
+    var nameimg = ''
+    var url = location.href.split('?')
+    var h1 = url[1].split('id=')
+    var hash = h1[1]
+    var trip
+    var asIB='image'
+    var one=true
+   
+    ///////// 
+    var slices = 24; //?
+    var imgw = 600
+    var nh = 1
+    var billmax = 1
+    var nrows=1
+    ////////
+    var goleft, goright
+    var othersbool=false
+    var actualclick=1
+
+    rs = makeid(50)
+    if (hash.length == 50) { rs = hash }
+    var datenow = Date.now()
+    //alert(datenow)
+    cfoto = [{ "date": datenow, "img": "", "w": 10, "h": 10, "n": slices, "W": W, "o": offset, "d": diagonal2, id: rs, msg: "" }]
+    url = location.href.split('?')
+    h1 = url[1].split('id=')
+    hash = h1[1]
+
+
+    if (hash.length == 50) {
+        nameimg = 'upload/' + hash + '.jpg'
+        //cfoto[0].img = hash
+    }
+    par = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 36, 38, 40]
+
+    function newi(n) {
+        cfoto[0].n = slices
+        ix = parseInt(Math.random() * (cfoto[0].w - diagonal2))
+        iy = parseInt(Math.random() * (cfoto[0].h - diagonal2))
+
+        //var oof= par[parseInt(random(par.length-1))]
+
+        diagonal2 = parseInt(random(W / 2, W))
+        slices = par[parseInt(random(par.length - 1))]
+        angle = (2 * PI) / slices;
+        angle2 = (2 * PI) / slices;
+        sangle = angle / 2;
+        aini2 = 0 + sangle * 1;
+        ofsset = random(0, 1)
+        //offset=PI/oof
+        //chinum()
+        var am = 0
+        if (n < bills.length && n > 0) {
+            am = bills[n]
+        }
+        cfoto[n] = { "x": ix, "y": iy, "n": slices, "d": diagonal2, "o": ofsset, "i": hash, "exp": "", "am": am }
+        //inpt.value(JSON.stringify(cfoto))
+        //sample.style('background-position', ix+'px '+iy+'px')
+        //ipoint.style('left', ix+'px')
+        //ipoint.style('top',  iy+'px')
+        inpt.value(JSON.stringify(cfoto))
+        //console.log('Newi ' + cfoto[n])
+    }
+
+
+    function preload() {
+        contf = 1
+    }
+
+
+
+   
+    function setup1() {
+
+        
+       
+        inpt = select('#coord');
+        trip = select('#trip');
+        goleft = select('#goleft');
+        goright = select('#goright');
+        others  = select('#others');
+        /*
+        imageVSbill  = select('#imageVSbill');
+        imageVSbill.style('position', 'absolute')
+        imageVSbill.style('left', (posc.x - width/2 - 100) + 'px')
+        imageVSbill.style('top', (posc.y + height + 30) + 'px')
+
+        others  = select('#others');
+        others.style('position', 'absolute')
+        others.style('left', (posc.x - width/3 - 100) + 'px')
+        others.style('top', (posc.y + height + 30) + 'px')
+
+        one  = select('#one');
+        one.style('position', 'absolute')
+        one.style('left', (posc.x - width*(3/2) - 100) + 'px')
+        one.style('top', (posc.y + height + 30) + 'px')
+        */
+
+        //console.log('billmax '+billmax)
+        //for (var a = 1; a <= billmax; a++) {
+        // newi(a)
+        //console.log('go '+cfoto[a])
+        //}
+
+       
+        //alert(cfoto.length-1+' '+cfoto[0].id)
+        if(started){
+            //billcanvas.remove()
+        }
+             margin = 10
+            console.log('INICIO')
+            W = imgw;
+            H = W
+            cfoto[0].W = W
+            diagonal2 = W;
+            offset = 0
+            marginx = margin * (nh + 1)
+
+            //*important?
+            slices=billmax
+            ////
+
+            //alert(cfoto.length-1)
+            //nrows = ceil((cfoto.length-1)/3)
+            //-->nrows = ceil((billmax) / nh)
+            marginy = margin * (nrows + 1)
+            pp = 1 / 2
+            imgsize = { w: img.width * pp, h: img.height * pp, propor: pp, cursor: 40, posx: 0, posy: 0 }
+            //console.log('width '+(imgw*nh+marginx))
+            billcanvas = createCanvas((imgw * nh + marginx), (imgw * nrows + marginy));
+             trip.style('display', 'none')
+            posc = billcanvas.position()
+            trip.style('position', 'absolute')
+            trip.style('left', (posc.x ) + 'px')
+            trip.style('top', (posc.y + height + 30) + 'px')
+          
+            goleft.style('left', (20 ) + 'px')
+            goleft.style('top', (posc.y + height/2) + 'px')
+          
+            goright.style('left', (windowWidth-80 ) + 'px')
+            goright.style('top', (posc.y + height/2) + 'px')
+            factor = 2;
+            angle = (2 * PI) / slices;
+            angle2 = (2 * PI) / slices;
+            sangle = angle / 2;
+            aini2 = 0 + sangle * 1;
+            aangle2 = 0;
+            radius = min(W, H); //2*4.9;
+            //angleMode(RADIANS);
+            imageMode(CENTER);
+
+           
+            //alert(cfoto)
+            cfoto[0].W = imgw
+            var hpos = 0
+            var contx = 1
+            var conty = 1
+            imgsize.posx = 0 + margin
+            imgsize.posy = hpos + margin
+             flowerprint = []
+            //for (var a = actualclick; a <= actualclick+billmax; a++) {
+            for (var a = actualclick; a < actualclick+billmax; a++) {
+            //newi(a)
+                //cfoto[0].w = img[a].width
+                //cfoto[0].h = img[a].height
+
+                flowerprint[a] = new Flowerprint(a, img[a], cfoto[0], cfoto[a], imgsize);
+
+                if (a % nh == 0 && a > 1) {
+                    hpos += cfoto[0].W;
+                    conty++
+                    imgsize.posy = hpos + margin * conty;
+                    contx = 0
+                }
+                imgsize.posx = cfoto[0].W * contx + margin * contx + margin
+                contx++
+            }
+      
+        setTimeout(function() {
+            started = true
+            //setup2()
+
+           redraw()
+        }, 800);
+         
+    }
+
+    function draw() {
+
+        if (started) {
+            background(44, 44, 44);
+            if(one){
+                console.log('is ONE '+actualclick)
+                var a=actualclick
+                flowerprint[a].change(a, cfoto[a])
+                flowerprint[a].display()
+                fe = cfoto[a].exp.replace(' ', '\n')
+                if(asIB=='bill'){
+                flowerprint[a].drawText(cfoto[a].am,fe)
+                }
+                goleft.style('display', 'block')
+                goright.style('display', 'block')
+            }else{
+                for (var a = 1; a <= billmax; a++) {
+                    flowerprint[a].change(a, cfoto[a])
+                    flowerprint[a].display()
+                    fe = cfoto[a].exp.replace(' ', '\n')
+                    if(asIB=='bill'){
+                    flowerprint[a].drawText(cfoto[a].am,fe)
+                    }
+                    //text(a,flowerprint[a].posx+100,flowerprint[a].posy+100)
+                    //console.log('img '+a)
+                }
+                goleft.style('display', 'none')
+                goright.style('display', 'none')
+            }
+            //flowerprint1.cssChange()
+            noLoop()
+
+
+            //save('flowerbill.png')
+            
+            trip.style('display', 'block')
+            
+
+        } else {
+            background(100);
+            //image(img, 0, 0, width + frameCount * 1.8, height + frameCount * 1.8)
+            fill(100 + frameCount, 150)
+            textStyle(BOLD)
+            rect(0, 0, width, height)
+            textAlign(CENTER, CENTER)
+            fill(0)
+
+            text('loading \n FlowerBill \n ' + frameCount, width / 2, height / 2)
+        }
+    }
+
+
+
+
+
+
+
+    function linkto() {
+
+    }
+
+    function chinum() {
+        //slices=parseInt(inum.value())
+        par = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 36, 38, 40]
+        //var oof= par[parseInt(random(par.length-1))]
+        var oof = random(2, 40)
+        offset = PI / oof
+        diagonal2 = random(150, W / 1.5)
+        slices = par[parseInt(random(par.length - 1))]
+        angle = (2 * PI) / slices;
+        angle2 = (2 * PI) / slices;
+        sangle = angle / 2;
+        aini2 = 0 + sangle * 1;
+
+    }
+
+
+    function tosave() {
+        contf = 1
+        for (a = 1; a <= billmax; a++) {
+            save("billet" + (contf + 0) + ".png");
+            redraw();
+            contf++
+        }
+        tolink()
+    }
+
+
+    function mousePressed() {
+       if (started && othersbool) {
+            for (var a = actualclick; a < actualclick+billmax; a++) {
+                flowerprint[a].clicked();
+            }
+        }
+        
+
+    }
+
+
+    function mouseMoved() {
+        if (started) {
+            /*
+            for (var a = 1; a <= billmax; a++) {
+                flowerprint[a].isInside();
+                if (flowerprint[a].inside) {
+                    cursor(HAND)
+                    //contdiv.html(bills[a])
+                    break
+                } else {
+                    cursor(ARROW)
+                }
+
+            }
+            */
+        }
+
+    }
+
+    function mousePressedX() {
+        //ofsset = random(PI * 2);
+        /*  clickCount++;
+          if (clickCount > billmax) {
+              clickCount = 1;
+          }
+          contdiv.html(contf)
+          redraw();
+          */
+    }
+
+    function savei() {
+        contSaved++;
+        //save("billet" + (contSaved + 0) + ".png");
+        code = inpt.value() + '{"x":' + centerx + ',"y":' + centery + '},\n'
+        inpt.value(code)
+        contdiv.html(contSaved)
+    }
+
+    function keyPressed() {
+        //if (key == " ") {
+            //savei();
+        //}
+    }
+
+    var savedraw = false
+    $(document).ready(function() {
+
+        $.post('viewer.php', { name: 'read2', n: 0, hash: hash }, function(data) {
+            //alert(data)
+            cfoto = JSON.parse(data)
+            var iurl = ''
+            for (var a = 1; a < cfoto.length ; a++) {
+                iurl = 'upload/' + cfoto[a].i + '.jpg'
+                //alert(iurl)
+                img[a] = loadImage(iurl);
+            }
+            console.log('CREADAS '+img.length)
+            setTimeout(function() {
+                setup1()
+            }, 6000);
+        });
+    
+
+        $("#saveb").click(function() {
+            const img2 = get();
+            img2.save('flowerbill' + frameCount+ '.png');
+
+        });
+        $("#imageVSbill").click(function() {
+            if(asIB=='image'){
+                asIB='bill'
+                $(this).html('As image');
+                 redraw();
+            }else{
+                asIB='image'
+                $(this).html('As bill');
+                 redraw();
+            }
+        }); 
+
+
+     $("#others").click(function(){
+
+       if(othersbool){
+            $("#others").html('Others')
+       }else{
+            $("#others").html('Unique')
+       }
+        othersbool=!othersbool
+    })
+
+    $("#goleft").click(function(){
+        actualclick--
+        if(actualclick<1){actualclick=img.length-1}
+         setup1()
+         //redraw();
+    })
+    $("#goright").click(function(){
+        actualclick++
+        if(actualclick>img.length-1){actualclick=1}
+         setup1()
+         //redraw();
+    })
+     $("#one").click(function() {
+            if(one){
+                actualclick=1
+                one=!one
+                $(this).html('One');
+                //nh = 6
+                //billmax = 12
+                //nrows=2
+
+                nh = 6
+                billmax = img.length-1
+                if(billmax<nh){
+                    nh = billmax
+                }
+                nrows = ceil((billmax) / nh)
+                //nrows=2
+                imgw=200
+                setup1()
+                //redraw();
+                //$("#goleft").css('display','none');
+                //$("#goright").css('display','none');
+            }else{
+                actualclick=1
+                one=!one
+                $(this).html('Multiple');
+                nh = 1
+                billmax = 1
+                nrows=1
+                imgw=600
+                setup1()
+                //redraw();
+                //$("#goleft").css('display','block');
+                //$("#goright").css('display','block');
+            }
+        });
+ });
+    </script>
+</body>
+
+</html>
