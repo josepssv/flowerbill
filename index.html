@@ -1,0 +1,104 @@
+<!DOCTYPE html><html><head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/p5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/addons/p5.dom.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/addons/p5.sound.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+     <script src="setup.js"></script>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="style.css">
+     <style>
+      html,body{font-family: Arial;background-color: #000;}
+       .header {
+              margin: 0 auto;
+              border: 0px solid black;
+              width: 70%;
+              color: #aaa;
+              border-radius: 3px;
+              background-color: #2d302a;
+              text-align: center;
+              padding: 6px 5% 2px 5%;
+
+              font-size: 12px;
+        }
+      .container {
+              margin: 0 auto;
+              border: 0px solid black;
+              width: 80%;
+              color: #fff;
+              border-radius: 3px;
+              background-color: #2d302a;
+              text-align: center;
+              padding-top: 33px;
+        }
+
+      .preview{
+         width: 100px;
+         height: 100px;
+         border: 1px solid black;
+         margin: 0 auto;
+         background: white;
+      }
+
+      .preview img{
+         display: none;
+      }
+      
+    </style>
+
+  </head>
+  <body>
+<div data-role="header" class="header"><span id="info" style=""><i>This bank was created in <span id="bankcreated"></span>. This bank has a capacity of <span id="limitbankflowers"></span> bills / <span id="limitbankamount"></span>f. We are using <span id="nwallets"></span> wallets with a limit of <span id="limitwallets"></span>. Each wallet has a limit of <span id="limitwalletflowers"></span> bills / <span id="limitwalletamount"></span>f. This is an ephemeral money for temporary use of <span id="expiration"></span> months. Our bank are whole currency (Flowerbills) without fractions  of 1f, 2f, 5f, 10f, 20f and 50f. This bank works in experimental beta phase. We do not insure your earnings or their transfer to physical currency. By using it I accept these conditions</i></span></div>
+<div class="container">
+    <h2 style="color:#888; padding-bottom: 70px;"><span id="bankName" style="color:#666;"></span> Flowerbill Bank <br><i style="font-size:14px;">Trying bills and bank, maybe time bank.<br>
+    Or create and share sounds and mandalas.
+    <br></i></h2>
+    
+        <div id="upload" style="padding-bottom: 240px;font-size:16px;color:#888">
+            <a href="upload.html"><button class="button" id="newdesign" style="display: inline-block;">Create a new wallet</button></a>
+            <button class="button" id="mywallet" style="display: inline-block;margin-left: 70px;">Access to your wallet</button>
+        </div>
+    
+<hr style="border: 1px solid #44553a; width:100%;">
+</div>
+
+ <script>
+$(document).ready(function() { 
+    $.post('one.php', { name: 'info' }, function(data) {
+                        var datap=JSON.parse(data) 
+                        bank.nwallets=datap.nwallets
+                        $('#nwallets').html(bank.nwallets)
+                        $('#limitwalletflowers').html(limitWalletFlowers)
+                        $('#limitbankflowers').html(limitBankFlowers)
+                        $('#limitwallets').html(limitWallets)
+                        $('#limitwalletamount').html(limitWalletAmount)
+                        $('#limitbankamount').html(limitAmount)
+                        $('#expiration').html(bank.expirationMonths)
+                        $('#bankcreated').html(bank.created)
+                        $('#bankName').html(bank.name)
+                        if(bank.nwallets>=limitWallets){
+                            $('#upload').html('The available wallets of this bank already have owners')
+                        }
+    })
+
+    /*$('#newwallet').click(function(){
+       $.post('nwallet.php', { name:'nwallet' } ,function(data){
+            //alert(data)
+            if(data.length==50){
+               location.href="wallet.html?id="+data
+           }
+        });
+    });*/
+   $('#mywallet').click(function(){
+       $.post('one.php', {name:'user'} ,function(data){
+
+            if(data.length>10){
+                location.href='wallet.html?id='+data
+            }else{
+                alert('You need create an wallet')
+            }
+        })
+    });
+});
+</script>
+
+</body></html>
