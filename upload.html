@@ -44,7 +44,7 @@
  var person=''
   $(document).ready(function(){
      $.post('one.php', {name:'user'} ,function(data){
-                if(data.length>10){
+                if(data.length>30){
                     location.href='wallet.html?id='+data
                 }else{
                      
