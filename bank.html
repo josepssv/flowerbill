@@ -251,7 +251,7 @@
         //dyarr=cfoto.sort( compare('am') );
         //dyarr1=cfoto.splice(1,cfoto.length)
         var am = 0
-        if(cfoto.length>2){
+        if(cfoto.length>1){
            am= amount()
         }
 
@@ -345,11 +345,12 @@
             var ch = '' 
             //ch+='<div id="bill' + big + '"  class="billed" style="display:inline-block;padding-right:150px;"></div>'
             ch+='<div id="bill' + big + '"  class="billed" style="position:absolute; top:50px; left:15px;"></div>'
-            ch+='<div style="width:80%; font-weight:700; color:#999; font-size:28px;">'
+            ch+='<div style="width:80%; display: block; margin-left: auto; margin-right: auto;font-weight:700; color:#999; font-size:28px;">'
            
-            ch+='<div style="display:inline-block">'+dya[c][groupbill[c]].title+'</div>'
+            ch+='<div style="width:60%; height:100px; margin:auto; text-align:center;">'+dya[c][groupbill[c]].title+'</div>'
+            ch+='<br>'
+            ch+='<div style="width:90%; margin: auto; font-weight:300; color:#000; text-align:center; font-size:18px;">'+dya[c][groupbill[c]].msg+'</div><br>'
             ch+='</div><br>'
-            ch+='<div style="width:80%; font-weight:300; color:#000; font-size:18px;">'+dya[c][groupbill[c]].msg+'</div><br>'
             ch+='<div style="display:inline-block;margin-top:10px; width:230px;max-width:230px;max-height:230px;"></div>'
             //ch+= '<div style="display:inline-block;margin-top:10px; width:600px;max-width:600px;max-height:600px;" id="mbill' + big + '"><span id="bill' + big + '" style="" class="billed"></span></div>'
             ch+='<br><textarea id="encodet" style="display:none;"></textarea>'
