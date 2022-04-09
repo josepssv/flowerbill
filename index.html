@@ -94,6 +94,7 @@ $(document).ready(function() {
             if(data.length>30){
                 var ok=data.substring(0,2)
                 if(ok=='ok'){
+                    link='yes'
                     var hash=data.substring(2)
                     location.href='wallet.html?id='+hash
                 }
