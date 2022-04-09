@@ -122,7 +122,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
        }else{
            $line = json_decode($lines[$n], true);
            $hash=ciphre($line[0]['id'],-1);
-           echo $hash;
+           echo 'ok'.$hash;
       }
     }
     if($name=='users'){
