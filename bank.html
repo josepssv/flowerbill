@@ -87,9 +87,14 @@
     //var nbills=[0,20,20,20,20,20,10]
     var nbills = [0, 5, 5, 5, 5, 5, 5]
     var url = location.href.split('?')
-    var banklink = window.location.href.split('?')[0] + '/bank.html'
-    var h1 = url[1].split('id=')
-    var hash = h1[1]
+   
+    if(url.length>1){
+        //var banklink = window.location.href.split('?')[0] + '/bank.html'
+        var h1 = url[1].split('id=')
+        var hash = h1[1]
+    }else{
+        hash=''
+    }
     var yeh = 2000,
         moh = 1
     var flower = []
@@ -250,6 +255,10 @@
     function setup1() {
         //dyarr=cfoto.sort( compare('am') );
         //dyarr1=cfoto.splice(1,cfoto.length)
+        var cursorp5='cursor:pointer;'
+        if(datap.img=='-1'){
+                        cursorp5=''
+        }
         var am = 0
         if(cfoto.length>1){
            am= amount()
@@ -262,18 +271,18 @@
         //JSON.stringify(bills)
         var ch = ''
 
-        ch += '<div style="position:relative;width:100%;top:200px;">'
+        ch += '<div id="panelbill" style="position:relative;width:100%;top:200px;">'
         for (var a = 0; a < dya.length; a++) {
-            ch += '<div style="display:inline-block;margin-top:50px;width:220px;text-align:center;max-width:220px;max-height:220px;" class="dbill" id="mbill' + a + '"><span id="bill' + a + '" style="cursor:pointer;" class="billed"></span><br><button id="toview' + a + '" class="view button" style="visibility:visible;">' + dya[a][groupbill[a]].title + '</button></div>'
+            ch += '<div style="display:inline-block;margin-top:50px;width:220px;text-align:center;max-width:220px;max-height:220px;" class="dbill" id="mbill' + a + '"><span id="bill' + a + '" style="'+cursorp5+'" class="billed"></span><br><button id="toview' + a + '" class="view button" style="visibility:visible;">' + dya[a][groupbill[a]].title + '</button></div>'
         }
 
-        ch += '<p style="margin-top:90px;padding-bottom :50px; "> Happy Flower Bills!</p><br>'
+        //ch += '<p style="margin-top:90px;padding-bottom :50px; "> Happy Flower Bills!</p><br>'
         ch += '</div>'
 
 
 
 
-        ch += '<div style="position:fixed; left:0px;top:0px; padding-top:5px; width:100%;text-align:center; background-color:#2d302a;;">'
+        ch += '<div id="panel" style="position:fixed; display:none; left:0px;top:0px; padding-top:5px; width:100%;text-align:center; background-color:#2d302a;;">'
 
         ch += '<div style="color:#ddd;">'
         ch += '<button style="margin-left:40px;"  type="button" id="send" class="button">Send me</button>'
@@ -332,7 +341,14 @@
         }
 
         var modalsend = $("#fbmodal").wgModal();
-
+        if(datap.img=='-1'){
+                        //location.href="index.html"}
+                        $('#panelbill').css('top','50px')
+                        $("#panel").hide()
+        
+        }else{
+            $("#panel").show()
+        }
         $(".view").click(function() {
             predya=dya 
             cfoto=dya1
@@ -391,35 +407,38 @@
             });
 
         $(document).on('click', (".billed"), function() {
-            a = this.id
-            b = a.split('bill')
-            c = parseInt(b[1])
-            //if(groupbill[c]>groupbillIni[c]){groupbill[c]=groupbillIni[c]}
-            idsec = dya[c][groupbill[c]].id
-            amsec = dya[c][groupbill[c]].am
-            nid = makeid(4)
-            //nid=groupid[c]
-            ssec.push([c, idsec, amsec, nid])
-            billcollect[c].draw()
-            billcollect[c].tumb()
-            var src = billcollect[c].tumb()
-            var cod = '<button class="selectedbill" id="sbill' + nid + '" style="cursor:pointer;background-image:url(' + src + ');">' + amsec + '</button>'
-            $('#selectedSpan').append(cod)
-            var d = sumamount()
-            $('#amountspan').html(d)
-            $('#aselectedBills').html(d)
-            $('#totalamount').html(am - d)
-
-            var sbill = cfoto.length - 1 - ssec.length
-            $('#totalFlowers').html(sbill)
-
-            groupbill[c]--
-            if (groupbill[c] < 0) { groupbill[c] = 0;
-                $(this).hide() } else {
+            if(datap.img=='-1'){
+                        
+            }else{
+                a = this.id
+                b = a.split('bill')
+                c = parseInt(b[1])
+                //if(groupbill[c]>groupbillIni[c]){groupbill[c]=groupbillIni[c]}
+                idsec = dya[c][groupbill[c]].id
+                amsec = dya[c][groupbill[c]].am
+                nid = makeid(4)
+                //nid=groupid[c]
+                ssec.push([c, idsec, amsec, nid])
                 billcollect[c].draw()
                 billcollect[c].tumb()
-            }
+                var src = billcollect[c].tumb()
+                var cod = '<button class="selectedbill" id="sbill' + nid + '" style="cursor:pointer;background-image:url(' + src + ');">' + amsec + '</button>'
+                $('#selectedSpan').append(cod)
+                var d = sumamount()
+                $('#amountspan').html(d)
+                $('#aselectedBills').html(d)
+                $('#totalamount').html(am - d)
 
+                var sbill = cfoto.length - 1 - ssec.length
+                $('#totalFlowers').html(sbill)
+
+                groupbill[c]--
+                if (groupbill[c] < 0) { groupbill[c] = 0;
+                    $(this).hide() } else {
+                    billcollect[c].draw()
+                    billcollect[c].tumb()
+                }
+            }
         });
 
         $(document).on('click', '.selectedbill', function() {
@@ -643,18 +662,13 @@
 
     $(document).ready(function() {
         //hash=GetURLParameter(window.location)
-
-
-        if (hash.length == 50) {
-
+        
             $.post('bank.php', { name: 'read',  n: -1, query: 'all' }, function(data) {
                 var icf='[{"img":"","w":800,"h":1420,"n":30,"W":200,"o":0,"d":333.33333333333337,"id":""},'+data+']'
                 //alert(icf)
                 cfoto=JSON.parse(icf)
-
                 dya1=JSON.parse(icf)
                 firstel=dya1[0]
-            
                 dya1.shift()
                 dya=groupBy(dya1, ['x','y','o'])
                 
@@ -668,10 +682,11 @@
                 $.post('one.php', { name: 'limit', hash: hash }, function(data) {
                     //datap={"bills":0,"amount":0,"nwallets":1,"img":""}
                     //alert(data)
-                    datap=JSON.parse(data) 
-                    
-                    
-                    if(datap.img=='-1'){location.href="index.html"}
+                    datap=JSON.parse(data)                     
+                    if(datap.img=='-1'){
+                        //location.href="index.html"}
+                        //$('#panelbill').css('background-color','#000')
+                    }
                     personal.remainFlowers=personal.flowersLimit-datap.bills 
                     personal.remainAmount=personal.amountLimit-datap.amount
                     personal.flowers=datap.bills
@@ -692,9 +707,9 @@
 
 
 
-        } else {
-            document.write('<h3>We need a collectio billet id</h3>')
-        }
+       // } else {
+            //document.write('<h3>We need a collectio billet id</h3>')
+       // }
 
 
 
@@ -728,8 +743,8 @@
                     var exp = dya[k][groupbill[k]].exp.replace(' ', '\n')
                     flower[k].change(k, dya[k][groupbill[k]])
                     flower[k].display()
-                    //flower[k].drawText(dya[k][groupbill[k]].am, exp)
-                    flower[k].drawText(dya[k][groupbill[k]].am,' ')
+                    flower[k].drawText(dya[k][groupbill[k]].am, exp)
+                    //flower[k].drawText(dya[k][groupbill[k]].am,' ')
                     flower[k].textextra('x' + (groupbill[k] + 1))
                     // $("#numbill"+(k-contb-1)).html(contb+1) 
 
