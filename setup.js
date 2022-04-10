@@ -17,6 +17,8 @@ var expirationDate=[]
 //var urln=location.href
 var urln = window.location.href.replace(/\/$/, '');
 var bankName = urln.substr(urln.lastIndexOf('/') + 1);
+var urlns = urln.split('/')
+var bankName2 = urlns[urlns.length-2];
 
 var bank={name:bankName,created:bankCreated,flowers:0,amount:0,flowersLimit:0,amountLimit:0,remainFlowers:0,remainAmount:0,nwallets:0,limitWallets:limitWallets,expirationMonths:2}
 bank.flowersLimit=limitBankFlowers
