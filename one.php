@@ -129,8 +129,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       $ourlist="wallets.json";
        $lines = file($ourlist);
        $n=-1;
-       $cuser=ciphre($user,1);
-       $key='"user":"'.$cuser;
+       //$cuser=ciphre($user,1);
+       $img = $_POST['img'];
+       //$key='"user":"'.$cuser;
+       $key='"img":"'.$img;
        for($a=0;$a<count($lines);$a++){
           if(strrpos($lines[$a],$key)>0){
              $n=$a;

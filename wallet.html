@@ -702,7 +702,8 @@ function playbill2(ch1,ch2){
             if(solse.length==0){
                 return
             }
-             $.post('one.php', {name:'users'} ,function(data){
+             $.post('one.php', {name:'users',img:firstel.img } ,function(data){
+               
                 if(data.length>10){
                     var ffrom = cfoto[0].img
                     var amountval = $('#amountspan').text()
