@@ -86,7 +86,9 @@ if ($handle1) {
             array_push($idwallet,$ld[0]['id']); 
             //if(strlen($ld[0]['id'])>10){
 
-             $cad .= '<a href="wallet.html?id='.$cid.'">'.$ld[0]['img'].'</a><br>'."\n";  
+             //$cad .= '<a href="wallet.html?id='.$cid.'">'.$ld[0]['img'].'</a><br>'."\n"; 
+              //$cad .= '<a href="'.$imgspath.$ld[0]['img'].'.jpg">'.$ld[0]['img'].'</a><br>'."\n"; 
+            $cad .= '<a href="clean.php?img='.$ld[0]['img'].'">'.$ld[0]['img'].'</a><br>'."\n"; 
              $chad .= '<div style="display:inline-block;margin-left:30px;"><img src="'.$imgspath.$ld[0]['img'].'.jpg" width="80px"><br>'.$ld[0]['img'].'</div>'."\n";    
             }
         }
