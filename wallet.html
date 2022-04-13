@@ -589,7 +589,7 @@ function playbill2(ch1,ch2){
             billcollect[c].draw()
             billcollect[c].tumb()
             var src = billcollect[c].tumb()
-            var cod = '<button class="selectedbill" id="sbill' + nid + '" style="cursor:pointer;background-image:url(' + src + ');">' + amsec + '</button>'
+            var cod = '<button class="selectedbill" id="sbill' + nid + '" style="cursor:pointer;background-image:url(' + src + ');background-size: 200px 200px;">' + amsec + '</button>'
             $('#selectedSpan').append(cod)
             var d = sumamount()
             var amd= am - d
